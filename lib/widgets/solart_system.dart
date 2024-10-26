@@ -33,8 +33,8 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
 
   SolarSystemController get controller => widget.solarSystemController;
 
-  double _rotateX = -1;
-  double _orbitOpacity = 1;
+  double _rotateX = -1.0;
+  double _orbitOpacity = 1.0;
 
   Matrix4 get _perspectiveMatrix => Matrix4.identity()
     ..setEntry(3, 2, 0.00124)
@@ -64,11 +64,8 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
     for (var planet in controller.planets) {
       planet.updatePosition(_sunOrbitBehavior);
       planet.trailPositions.add(planet.position);
-      final maxTrailLength = calculateMaxTrailLength(
-        orbitalRadius: planet.orbitalRadius,
-      );
 
-      if (planet.trailPositions.length > maxTrailLength) {
+      if (planet.trailPositions.length > planet.maxTrailLength) {
         planet.trailPositions.removeAt(0);
       }
 

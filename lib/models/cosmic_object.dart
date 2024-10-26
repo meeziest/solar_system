@@ -1,6 +1,7 @@
 // Interfaces
 import 'dart:ui';
 
+import '../utils/utils.dart';
 import 'behaviors.dart';
 
 abstract interface class CosmicObject {
@@ -72,6 +73,8 @@ abstract class Planet with WithOrbitalBehavior implements CosmicObject {
   final double speed;
   @override
   final double orbitalRadius;
+  final int maxTrailLength;
+  final TiltAngle tiltAngle;
 
   @override
   double angle;
@@ -89,9 +92,13 @@ abstract class Planet with WithOrbitalBehavior implements CosmicObject {
     required this.realRelativeRadius,
     this.position = const Offset(0, 0),
     this.angle = 0.0,
+    this.tiltAngle = const TiltAngle(axis: TiltAxis.X, angle: 0),
     double? showCaseRadius,
   })  : showCaseRadius = showCaseRadius ?? realRelativeRadius,
-        radius = showCaseRadius ?? realRelativeRadius;
+        radius = showCaseRadius ?? realRelativeRadius,
+        maxTrailLength = calculateMaxTrailLength(
+          orbitalRadius: orbitalRadius,
+        );
 
   @override
   Offset updatePosition(OrbitalMotionBehavior behavior) => behavior.updatePosition(this);
@@ -110,6 +117,7 @@ abstract class Satellite with WithOrbitalBehavior implements CosmicObject {
   final double speed;
   @override
   final double orbitalRadius;
+  final TiltAngle tiltAngle;
 
   @override
   double angle;
@@ -117,7 +125,6 @@ abstract class Satellite with WithOrbitalBehavior implements CosmicObject {
   Offset position;
   @override
   double radius;
-  List<Offset> trailPositions = [];
 
   Satellite({
     required this.name,
@@ -127,10 +134,20 @@ abstract class Satellite with WithOrbitalBehavior implements CosmicObject {
     required this.realRelativeRadius,
     this.position = const Offset(0, 0),
     this.angle = 0.0,
+    this.tiltAngle = const TiltAngle(axis: TiltAxis.X, angle: 0),
     double? showCaseRadius,
   })  : showCaseRadius = showCaseRadius ?? realRelativeRadius,
         radius = showCaseRadius ?? realRelativeRadius;
 
   @override
   Offset updatePosition(OrbitalMotionBehavior behavior) => behavior.updatePosition(this);
+}
+
+enum TiltAxis { X, Y }
+
+class TiltAngle {
+  final TiltAxis axis;
+  final double angle;
+
+  const TiltAngle({required this.axis, required this.angle});
 }

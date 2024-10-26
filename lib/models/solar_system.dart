@@ -28,6 +28,7 @@ class Mercury extends Planet {
     super.showCaseRadius,
   }) : super(
           name: 'Mercury',
+          tiltAngle: const TiltAngle(axis: TiltAxis.Y, angle: -7.0),
           color: const Color(0xFFB2B2B2),
         );
 }
@@ -42,6 +43,7 @@ class Venus extends Planet {
     super.showCaseRadius,
   }) : super(
           name: 'Venus',
+          tiltAngle: const TiltAngle(axis: TiltAxis.Y, angle: 3.4),
           color: const Color(0xFFEEDB00),
         );
 }
@@ -60,6 +62,7 @@ class Earth extends Planet with WithSatellites {
     this.satellites = const [],
   }) : super(
           name: 'Earth',
+          tiltAngle: const TiltAngle(axis: TiltAxis.X, angle: 0.0),
           color: const Color(0xFF0000FF),
         );
 }
@@ -78,6 +81,7 @@ class Mars extends Planet with WithSatellites {
     this.satellites = const [],
   }) : super(
           name: 'Mars',
+          tiltAngle: const TiltAngle(axis: TiltAxis.Y, angle: 1.9),
           color: const Color(0xFFFF0000),
         );
 }
@@ -92,6 +96,7 @@ class Jupiter extends Planet {
     super.showCaseRadius,
   }) : super(
           name: 'Jupiter',
+          tiltAngle: const TiltAngle(axis: TiltAxis.X, angle: 1.3),
           color: const Color(0xFFFFA500),
         );
 }
@@ -106,6 +111,7 @@ class Saturn extends Planet {
     super.showCaseRadius,
   }) : super(
           name: 'Saturn',
+          tiltAngle: const TiltAngle(axis: TiltAxis.X, angle: -2.5),
           color: const Color(0xFFFFD700),
         );
 }
@@ -120,6 +126,7 @@ class Uranus extends Planet {
     super.showCaseRadius,
   }) : super(
           name: 'Uranus',
+          tiltAngle: const TiltAngle(axis: TiltAxis.X, angle: 0.8),
           color: const Color(0xFF40E0D0),
         );
 }
@@ -134,6 +141,7 @@ class Neptune extends Planet {
     super.showCaseRadius,
   }) : super(
           name: 'Neptune',
+          tiltAngle: const TiltAngle(axis: TiltAxis.Y, angle: -1.8),
           color: const Color(0xFF000080),
         );
 }

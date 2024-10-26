@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 
 double $lerpDouble(double a, double b, double t) => a * (1.0 - t) + b * t;
 
@@ -24,4 +25,10 @@ extension IterableExt<E> on Iterable {
     }
     return null;
   }
+}
+
+Matrix4 createOrbitTransform(double tiltAngle) {
+  Matrix4 matrix = Matrix4.identity();
+  matrix.rotateY(tiltAngle * pi / 180);
+  return matrix;
 }
