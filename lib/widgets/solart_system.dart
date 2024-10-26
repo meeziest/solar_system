@@ -63,6 +63,14 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
     prevElapsed = elapsed - prevElapsed;
     for (var planet in controller.planets) {
       planet.updatePosition(_sunOrbitBehavior);
+      planet.trailPositions.add(planet.position);
+      final maxTrailLength = calculateMaxTrailLength(
+        orbitalRadius: planet.orbitalRadius,
+      );
+
+      if (planet.trailPositions.length > maxTrailLength) {
+        planet.trailPositions.removeAt(0);
+      }
 
       if (planet case WithSatellites(satellites: var satellites)) {
         for (var satellite in satellites) {
@@ -71,6 +79,30 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
       }
     }
     if (controller.speedFactor != 0.0) controller.repaint();
+  }
+
+  void onZoomInTick(double delta) {
+    scalePlanets(t: delta, zoom: true);
+    _rotateX = $lerpDouble(-1.0, 0.0, Curves.easeOutQuart.transform(delta));
+    _orbitOpacity = $lerpDouble(1.0, 0.0, Curves.easeOutExpo.transform(delta));
+    controller.speedFactor = $lerpDouble(
+      controller.maxSpeedFactor,
+      0.0,
+      Curves.linear.transform(delta),
+    );
+    setState(() {});
+  }
+
+  void onZoomOutTick(double delta) {
+    scalePlanets(t: delta, zoom: false);
+    _rotateX = $lerpDouble(0.0, -1.0, Curves.easeInBack.transform(delta));
+    _orbitOpacity = $lerpDouble(0.0, 1.0, Curves.easeInExpo.transform(delta));
+    controller.speedFactor = $lerpDouble(
+      0.0,
+      controller.maxSpeedFactor,
+      Curves.easeInExpo.transform(delta),
+    );
+    setState(() {});
   }
 
   void scalePlanets({required double t, required bool zoom}) {
@@ -131,38 +163,15 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
           zoomOutDuration: widget.zoomOutDuration,
           zoomScale: controller.zoomScale,
           zoomTarget: zoomTarget,
-          onZoomInTick: (delta) {
-            scalePlanets(t: delta, zoom: true);
-            _rotateX = $lerpDouble(-1.0, 0.0, Curves.easeOutQuart.transform(delta));
-            _orbitOpacity = $lerpDouble(1.0, 0.0, Curves.easeOutExpo.transform(delta));
-            controller.speedFactor = $lerpDouble(
-              controller.maxSpeedFactor,
-              0.0,
-              Curves.linear.transform(delta),
-            );
-            setState(() {});
-          },
-          onZoomOutTick: (delta) {
-            scalePlanets(t: delta, zoom: false);
-            _rotateX = $lerpDouble(0.0, -1.0, Curves.easeInBack.transform(delta));
-            _orbitOpacity = $lerpDouble(0.0, 1.0, Curves.easeInExpo.transform(delta));
-            controller.speedFactor = $lerpDouble(
-              0.0,
-              controller.maxSpeedFactor,
-              Curves.easeInExpo.transform(delta),
-            );
-            setState(() {});
-          },
+          onZoomStart: () => !controller.zoom && !_ticker.isActive ? _ticker.start() : null,
+          onZoomInTick: onZoomInTick,
+          onZoomOutTick: onZoomOutTick,
+          onZoomEnd: () => controller.zoom ? _ticker.stop() : null,
           child: SizedBox.square(
             dimension: widget.size,
             child: CustomPaint(
-              painter: OrbitsPainter(
-                controller: controller,
-                opacity: _orbitOpacity,
-              ),
-              foregroundPainter: SolarSystemPainter(
-                controller: controller,
-              ),
+              painter: OrbitsPainter(controller: controller, opacity: _orbitOpacity),
+              foregroundPainter: SolarSystemPainter(controller: controller),
             ),
           ),
         ),

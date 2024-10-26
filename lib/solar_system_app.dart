@@ -5,7 +5,7 @@ import 'package:solar_system/utils/generator.dart';
 import 'package:solar_system/widgets/solart_system.dart';
 
 class SolarSystemApp extends StatelessWidget {
-  final double solarSystemSize = 600;
+  final double solarSystemSize = 500;
   late final SolarSystemGenerator generator = SolarSystemGenerator(size: solarSystemSize);
   late final SolarSystemController controller = generator.generateSolarSystem();
 

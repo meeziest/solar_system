@@ -15,11 +15,23 @@ class OrbitsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     for (var cosmicObject in _controller.planets) {
+      for (int i = 0; i < cosmicObject.trailPositions.length; i++) {
+        final alpha = (255 * (i / cosmicObject.trailPositions.length)).toInt();
+        final trailPaint = Paint()
+          ..color = cosmicObject.color.withAlpha(alpha)
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(
+          cosmicObject.trailPositions[i],
+          cosmicObject.radius / 20,
+          trailPaint,
+        );
+      }
+
       canvas.drawCircle(
         _controller.star.position,
         cosmicObject.orbitalRadius,
         Paint()
-          ..strokeWidth = 0.2
+          ..strokeWidth = 0.1
           ..color = Colors.blueGrey.withOpacity(opacity)
           ..style = PaintingStyle.stroke,
       );

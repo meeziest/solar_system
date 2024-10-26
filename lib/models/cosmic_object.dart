@@ -79,6 +79,7 @@ abstract class Planet with WithOrbitalBehavior implements CosmicObject {
   Offset position;
   @override
   double radius;
+  List<Offset> trailPositions = [];
 
   Planet({
     required this.name,
@@ -93,7 +94,7 @@ abstract class Planet with WithOrbitalBehavior implements CosmicObject {
         radius = showCaseRadius ?? realRelativeRadius;
 
   @override
-  void updatePosition(OrbitalMotionBehavior behavior) => behavior.updatePosition(this);
+  Offset updatePosition(OrbitalMotionBehavior behavior) => behavior.updatePosition(this);
 }
 
 abstract class Satellite with WithOrbitalBehavior implements CosmicObject {
@@ -116,6 +117,7 @@ abstract class Satellite with WithOrbitalBehavior implements CosmicObject {
   Offset position;
   @override
   double radius;
+  List<Offset> trailPositions = [];
 
   Satellite({
     required this.name,
@@ -130,5 +132,5 @@ abstract class Satellite with WithOrbitalBehavior implements CosmicObject {
         radius = showCaseRadius ?? realRelativeRadius;
 
   @override
-  void updatePosition(OrbitalMotionBehavior behavior) => behavior.updatePosition(this);
+  Offset updatePosition(OrbitalMotionBehavior behavior) => behavior.updatePosition(this);
 }

@@ -7,7 +7,7 @@ abstract interface class OrbitalMotionBehavior {
   abstract final double speedFactor;
   abstract final CosmicObject orbit;
 
-  void updatePosition(CosmicObject planet);
+  Offset updatePosition(CosmicObject planet);
 }
 
 class CircularOrbitBehavior implements OrbitalMotionBehavior {
@@ -20,7 +20,7 @@ class CircularOrbitBehavior implements OrbitalMotionBehavior {
   CircularOrbitBehavior({required this.orbit, this.speedFactor = 1});
 
   @override
-  void updatePosition(CosmicObject cosmicObject) {
+  Offset updatePosition(CosmicObject cosmicObject) {
     cosmicObject.angle += (orbit.speed + cosmicObject.speed) * speedFactor;
     cosmicObject.angle %= 2 * pi;
 
@@ -28,6 +28,7 @@ class CircularOrbitBehavior implements OrbitalMotionBehavior {
     final dy = orbit.position.dy + cosmicObject.orbitalRadius * sin(cosmicObject.angle);
 
     cosmicObject.position = Offset(dx, dy);
+    return cosmicObject.position;
   }
 }
 
@@ -41,7 +42,7 @@ class EllipticalOrbitBehavior implements OrbitalMotionBehavior {
   EllipticalOrbitBehavior({required this.orbit, this.speedFactor = 1});
 
   @override
-  void updatePosition(CosmicObject planet) {
+  Offset updatePosition(CosmicObject planet) {
     /// TODO: Implement elliptical orbit behavior
     throw UnimplementedError();
   }
