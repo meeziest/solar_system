@@ -103,18 +103,23 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
   }
 
   void scalePlanets({required double t, required bool zoom}) {
+    controller.star.radius = $lerpDouble(
+      zoom ? controller.star.showCaseRadius : controller.star.realRelativeRadius,
+      zoom ? controller.star.realRelativeRadius : controller.star.showCaseRadius,
+      zoom ? Curves.easeOutCubic.transform(t) : Curves.easeInExpo.transform(t),
+    );
     for (var planet in controller.planets) {
       planet.radius = $lerpDouble(
         zoom ? planet.showCaseRadius : planet.realRelativeRadius,
         zoom ? planet.realRelativeRadius : planet.showCaseRadius,
-        zoom ? Curves.easeOutQuart.transform(t) : Curves.easeInQuart.transform(t),
+        zoom ? Curves.easeOutCubic.transform(t) : Curves.easeInExpo.transform(t),
       );
       if (planet case WithSatellites(satellites: var satellites)) {
         for (var satellite in satellites) {
           satellite.radius = $lerpDouble(
             zoom ? satellite.showCaseRadius : satellite.realRelativeRadius,
             zoom ? satellite.realRelativeRadius : satellite.showCaseRadius,
-            zoom ? Curves.easeOutQuart.transform(t) : Curves.easeInCubic.transform(t),
+            zoom ? Curves.easeOutCubic.transform(t) : Curves.easeInExpo.transform(t),
           );
         }
       }

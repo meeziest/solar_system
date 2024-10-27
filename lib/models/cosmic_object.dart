@@ -98,6 +98,7 @@ abstract class Planet with WithOrbitalBehavior implements CosmicObject {
         radius = showCaseRadius ?? realRelativeRadius,
         maxTrailLength = calculateMaxTrailLength(
           orbitalRadius: orbitalRadius,
+          speed: speed,
         );
 
   @override

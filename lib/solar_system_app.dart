@@ -38,7 +38,7 @@ class SolarSystemApp extends StatelessWidget {
                               if (controller.zoom) {
                                 controller.zoomOut();
                               } else {
-                                controller.zoomPlanet(500, planet: planet);
+                                controller.zoomPlanet(100, planet: planet);
                               }
                             },
                             child: Text(planet.name),
@@ -55,7 +55,7 @@ class SolarSystemApp extends StatelessWidget {
                                       if (controller.zoom) {
                                         controller.zoomOut();
                                       } else {
-                                        controller.zoomPlanet(500, planet: satellite);
+                                        controller.zoomPlanet(200, planet: satellite);
                                       }
                                     },
                                     child: Text(satellite.name),
@@ -74,8 +74,8 @@ class SolarSystemApp extends StatelessWidget {
                   child: SolarSystemWidget(
                     controller: controller,
                     size: solarSystemSize,
-                    zoomInDuration: const Duration(seconds: 3),
-                    zoomOutDuration: const Duration(seconds: 1),
+                    zoomInDuration: const Duration(milliseconds: 1500),
+                    zoomOutDuration: const Duration(milliseconds: 450),
                   ),
                 ),
               ),

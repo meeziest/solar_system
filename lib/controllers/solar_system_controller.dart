@@ -16,7 +16,7 @@ final class SolarSystemController extends ChangeNotifier {
     required this.planets,
     required this.star,
     double? speedFactor,
-    this.zoomScale = 200,
+    this.zoomScale = 100,
   })  : maxSpeedFactor = speedFactor ?? 0.2,
         speedFactor = speedFactor ?? 0.2,
         zoomController = ZoomController();

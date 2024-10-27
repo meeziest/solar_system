@@ -11,11 +11,12 @@ Offset $lerpOffset(Offset a, Offset b, double t) => Offset(
 
 int calculateMaxTrailLength({
   required double orbitalRadius,
+  required double speed,
   double trailPercentage = 35,
 }) {
   double circumference = 2 * pi * orbitalRadius;
   double trailLength = circumference * (trailPercentage / 100);
-  return trailLength.round();
+  return (trailLength / (1 - speed)).round();
 }
 
 extension IterableExt<E> on Iterable {

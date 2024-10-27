@@ -43,6 +43,7 @@ class SolarSystemGenerator extends PlanetarySystemGenerator {
       /// Sun
       star: Sun(
         position: center,
+        showCaseRadius: showCaseRadius,
         realRelativeRadius: maxCosmicObjectRadius,
       ),
 

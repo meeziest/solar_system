@@ -10,7 +10,7 @@ class _ZoomInCurve extends Curve {
 
   @override
   double transformInternal(double t) {
-    return const Cubic(0.6, 0.0, 0.735, 0.045).transform(t);
+    return const Cubic(0.6, -0.0045, 0.735, 0.045).transform(t);
   }
 }
 
