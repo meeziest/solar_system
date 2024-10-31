@@ -22,7 +22,7 @@ class OrbitsPainter extends CustomPainter {
           ..style = PaintingStyle.fill;
         canvas.drawCircle(
           cosmicObject.trailPositions[i],
-          cosmicObject.radius / 20,
+          cosmicObject.radius / 15,
           trailPaint,
         );
       }

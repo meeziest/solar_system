@@ -33,12 +33,14 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
 
   SolarSystemController get controller => widget.solarSystemController;
 
-  double _rotateX = -1.0;
+  double _rotate = -1.0;
   double _orbitOpacity = 1.0;
+  double _v = 1e-3;
 
   Matrix4 get _perspectiveMatrix => Matrix4.identity()
-    ..setEntry(3, 2, 0.00124)
-    ..rotateX(_rotateX);
+    ..setEntry(3, 2, _v)
+    ..rotateX(_rotate)
+    ..rotateZ(-_rotate);
 
   @override
   void initState() {
@@ -80,7 +82,8 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
 
   void onZoomInTick(double delta) {
     scalePlanets(t: delta, zoom: true);
-    _rotateX = $lerpDouble(-1.0, 0.0, Curves.easeOutQuart.transform(delta));
+    _v = $lerpDouble(1e-3, 1e-2, Curves.easeOutCubic.transform(delta));
+    _rotate = $lerpDouble(-1.0, 0.0, Curves.easeOutQuart.transform(delta));
     _orbitOpacity = $lerpDouble(1.0, 0.0, Curves.easeOutExpo.transform(delta));
     controller.speedFactor = $lerpDouble(
       controller.maxSpeedFactor,
@@ -92,7 +95,8 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
 
   void onZoomOutTick(double delta) {
     scalePlanets(t: delta, zoom: false);
-    _rotateX = $lerpDouble(0.0, -1.0, Curves.easeInBack.transform(delta));
+    _v = $lerpDouble(1e-2, 1e-3, Curves.easeInExpo.transform(delta));
+    _rotate = $lerpDouble(0.0, -1.0, Curves.easeInQuart.transform(delta));
     _orbitOpacity = $lerpDouble(0.0, 1.0, Curves.easeInExpo.transform(delta));
     controller.speedFactor = $lerpDouble(
       0.0,

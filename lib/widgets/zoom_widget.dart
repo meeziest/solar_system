@@ -52,10 +52,10 @@ class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateM
 
   double delta = 0;
 
-  final double _startScale = 1.0;
+  final double _startScale = 0.9;
   final Offset _startPosition = Offset.zero;
 
-  double scale = 1.0;
+  double scale = 0.9;
   Offset offset = Offset.zero;
 
   Duration zoomElapsed = Duration.zero;

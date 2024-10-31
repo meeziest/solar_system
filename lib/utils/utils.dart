@@ -30,6 +30,8 @@ extension IterableExt<E> on Iterable {
 
 Matrix4 createOrbitTransform(double tiltAngle) {
   Matrix4 matrix = Matrix4.identity();
-  matrix.rotateY(tiltAngle * pi / 180);
+  matrix.setEntry(3, 2, 1e-3);
+  matrix.rotateX(tiltAngle);
+  matrix.rotateY(tiltAngle);
   return matrix;
 }

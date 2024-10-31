@@ -75,7 +75,7 @@ class SolarSystemApp extends StatelessWidget {
                     controller: controller,
                     size: solarSystemSize,
                     zoomInDuration: const Duration(milliseconds: 1500),
-                    zoomOutDuration: const Duration(milliseconds: 450),
+                    zoomOutDuration: const Duration(milliseconds: 1000),
                   ),
                 ),
               ),

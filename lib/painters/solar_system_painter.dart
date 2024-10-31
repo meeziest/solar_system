@@ -25,6 +25,7 @@ class SolarSystemPainter extends CustomPainter {
         cosmicObject.radius * 1.5,
         innerGlowPaint,
       );
+
       canvas.drawCircle(
         cosmicObject.position,
         cosmicObject.radius,
@@ -45,7 +46,7 @@ class SolarSystemPainter extends CustomPainter {
           );
           canvas.drawCircle(
             satellite.position,
-            satellite.radius,
+            satellite.radius * 2,
             Paint()
               ..color = satellite.color
               ..style = PaintingStyle.fill,
@@ -57,22 +58,22 @@ class SolarSystemPainter extends CustomPainter {
 
   void paintSun(Canvas canvas, Size size) {
     final outerGlowPaint = Paint()
-      ..color = _controller.star.color.withOpacity(0.2)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
+      ..color = _controller.star.color.withOpacity(0.05)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 33);
 
     final innerGlowPaint = Paint()
-      ..color = _controller.star.color.withOpacity(0.7)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+      ..color = _controller.star.color.withOpacity(0.77)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
 
     // glow effect for the sun
     canvas.drawCircle(
       _controller.star.position,
-      _controller.star.realRelativeRadius * 4.5,
+      _controller.star.radius * 10,
       outerGlowPaint,
     );
     canvas.drawCircle(
       _controller.star.position,
-      _controller.star.realRelativeRadius * 1.5,
+      _controller.star.radius * 1.33,
       innerGlowPaint,
     );
 
