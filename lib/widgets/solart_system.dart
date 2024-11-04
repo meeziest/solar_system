@@ -95,7 +95,7 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
 
   void onZoomOutTick(double delta) {
     scalePlanets(t: delta, zoom: false);
-    _v = $lerpDouble(1e-2, 1e-3, Curves.easeInExpo.transform(delta));
+    _v = $lerpDouble(1e-2, 1e-3, Curves.linear.transform(delta));
     _rotate = $lerpDouble(0.0, -1.0, Curves.easeInQuart.transform(delta));
     _orbitOpacity = $lerpDouble(0.0, 1.0, Curves.easeInExpo.transform(delta));
     controller.speedFactor = $lerpDouble(
@@ -135,7 +135,6 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
     if (controller.speedFactor == 0) {
       _ticker.stop();
       prevElapsed = Duration.zero;
-      controller.speedFactor = 0;
     }
     if (controller.speedFactor == controller.maxSpeedFactor) {
       if (!_ticker.isTicking) {

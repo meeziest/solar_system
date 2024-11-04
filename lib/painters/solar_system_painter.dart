@@ -46,7 +46,7 @@ class SolarSystemPainter extends CustomPainter {
           );
           canvas.drawCircle(
             satellite.position,
-            satellite.radius * 2,
+            satellite.radius,
             Paint()
               ..color = satellite.color
               ..style = PaintingStyle.fill,

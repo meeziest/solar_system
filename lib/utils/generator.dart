@@ -17,7 +17,7 @@ class SolarSystemGenerator extends PlanetarySystemGenerator {
   SolarSystemController generateSolarSystem() {
     double maxOrbitalRadius = size / 2;
     double maxCosmicObjectRadius = 0.02 * maxOrbitalRadius;
-    double showCaseRadius = maxCosmicObjectRadius / 2.5;
+    double showCaseRadius = maxCosmicObjectRadius / 3;
 
     const double sunRealRadius = 696340.0;
 
