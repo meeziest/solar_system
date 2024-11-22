@@ -9,8 +9,6 @@ final class SolarSystemController extends ChangeNotifier {
   final List<Planet> planets;
   final ZoomController zoomController;
   final double maxSpeedFactor;
-  double speedFactor;
-  double zoomScale;
 
   SolarSystemController({
     required this.planets,
@@ -22,6 +20,8 @@ final class SolarSystemController extends ChangeNotifier {
         zoomController = ZoomController();
 
   CosmicObject? selectedPlanet;
+  double speedFactor;
+  double zoomScale;
 
   bool get zoom => zoomController.zoom;
 
@@ -37,7 +37,9 @@ final class SolarSystemController extends ChangeNotifier {
     }
   }
 
-  void zoomOut() => zoomController.zoomOut();
+  void zoomOut() {
+    zoomController.zoomOut();
+  }
 
   void stop() {
     if (zoom) return;

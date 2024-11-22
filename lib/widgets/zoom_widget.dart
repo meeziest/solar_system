@@ -71,7 +71,7 @@ class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateM
       scale = $lerpDouble(
         _startScale,
         widget.zoomScale,
-        ZoomCurves.zoomIn.transform(delta),
+        CustomCurves.zoomIn.transform(delta),
       );
       offset = $lerpOffset(
         _startPosition,
@@ -83,7 +83,7 @@ class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateM
       scale = $lerpDouble(
         widget.zoomScale,
         _startScale,
-        ZoomCurves.zoomOut.transform(delta),
+        CustomCurves.zoomOut.transform(delta),
       );
       offset = $lerpOffset(
         widget.zoomTarget,
