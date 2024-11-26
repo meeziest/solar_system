@@ -58,11 +58,9 @@ class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateM
   double scale = 1.0;
   Offset offset = Offset.zero;
 
-  Duration zoomElapsed = Duration.zero;
   void onTick(Duration elapsed) {
-    zoomElapsed = elapsed - zoomElapsed;
     final zoomDuration = _controller.zoom ? widget.zoomInDuration : widget.zoomOutDuration;
-    delta = (zoomElapsed.inMicroseconds / zoomDuration.inMicroseconds).clamp(0, 1);
+    delta = (elapsed.inMicroseconds / zoomDuration.inMicroseconds).clamp(0, 1);
 
     if (delta == 0) widget.onZoomStart?.call();
 
@@ -94,7 +92,6 @@ class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateM
 
     if (delta == 1) {
       widget.onZoomEnd?.call();
-      zoomElapsed = Duration.zero;
       _zoomTicker.stop();
     }
   }
@@ -112,6 +109,7 @@ class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateM
 
   @override
   void dispose() {
+    _zoomTicker.dispose();
     _controller.removeListener(onZoom);
     super.dispose();
   }

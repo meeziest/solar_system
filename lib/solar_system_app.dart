@@ -20,19 +20,19 @@ class SolarSystemApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: const Color(0xff030035),
         body: SafeArea(
-          child: Stack(
+          child: Row(
             children: [
-              Positioned.fill(
+              PlanetsSelector(controller: controller),
+              Expanded(
                 child: RepaintBoundary(
                   child: SolarSystemWidget(
                     controller: controller,
                     size: solarSystemSize,
-                    zoomInDuration: const Duration(milliseconds: 2000),
+                    zoomInDuration: const Duration(milliseconds: 5000),
                     zoomOutDuration: const Duration(milliseconds: 1000),
                   ),
                 ),
-              ),
-              PlanetsSelector(controller: controller),
+              )
             ],
           ),
         ),
@@ -66,7 +66,7 @@ class PlanetsSelector extends StatelessWidget {
                     if (controller.zoom) {
                       controller.zoomOut();
                     } else {
-                      controller.zoomPlanet(100, planet: planet);
+                      controller.zoomPlanet(350, planet: planet);
                     }
                   },
                   child: Text(planet.name),

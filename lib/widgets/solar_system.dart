@@ -9,6 +9,8 @@ import 'package:solar_system/widgets/zoom_widget.dart';
 import '../controllers/solar_system_controller.dart';
 import '../models/behaviors.dart';
 import '../models/cosmic_object.dart';
+import '../painters/text_painter.dart';
+import 'hyper_text.dart';
 
 class SolarSystemWidget extends StatefulWidget {
   SolarSystemWidget({
@@ -37,16 +39,27 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
   double _orbitOpacity = 1.0;
   double _distortion = 1e-3;
 
+  bool showSelectedPlanetInfo = false;
+
   Matrix4 get _perspectiveMatrix => Matrix4.identity()
     ..setEntry(3, 2, _distortion)
-    ..rotateX(_rotate)
-    ..rotateZ(-_rotate);
+    ..rotateX(_rotate);
 
   @override
   void initState() {
     super.initState();
     _ticker = createTicker(onTick);
     _ticker.start();
+  }
+
+  @override
+  void didUpdateWidget(SolarSystemWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.solarSystemController != widget.solarSystemController) {
+      _ticker.dispose();
+      _ticker = createTicker(onTick);
+      _ticker.start();
+    }
   }
 
   OrbitalMotionBehavior get _sunOrbitBehavior => CircularOrbitBehavior(
@@ -59,9 +72,7 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
         speedFactor: controller.speedFactor,
       );
 
-  Duration prevElapsed = Duration.zero;
   void onTick(Duration elapsed) {
-    prevElapsed = elapsed - prevElapsed;
     for (var planet in controller.planets) {
       planet.updatePosition(_sunOrbitBehavior);
       planet.trailPositions.add(planet.position);
@@ -140,29 +151,61 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
     }
   }
 
+  void _onZoomStart() {
+    if (!controller.zoom && !_ticker.isActive) {
+      showSelectedPlanetInfo = false;
+      _ticker.start();
+    }
+  }
+
+  void _onZoomEnd() {
+    if (controller.zoom) {
+      showSelectedPlanetInfo = true;
+      _ticker.stop();
+    } else {
+      controller.selectedPlanet = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FittedBox(
       alignment: Alignment.center,
       fit: BoxFit.scaleDown,
-      child: Transform(
-        transform: _perspectiveMatrix,
-        alignment: FractionalOffset.center,
-        child: ZoomWidget(
-          zoomController: controller.zoomController,
-          zoomInDuration: widget.zoomInDuration,
-          zoomOutDuration: widget.zoomOutDuration,
-          zoomScale: controller.zoomScale,
-          zoomTarget: zoomTarget,
-          onZoomStart: () => !controller.zoom && !_ticker.isActive ? _ticker.start() : null,
-          onZoomInTick: onZoomInTick,
-          onZoomOutTick: onZoomOutTick,
-          onZoomEnd: () => controller.zoom ? _ticker.stop() : null,
-          child: SizedBox.square(
-            dimension: widget.size,
-            child: CustomPaint(
-              painter: OrbitsPainter(controller: controller, opacity: _orbitOpacity),
-              foregroundPainter: SolarSystemPainter(controller: controller),
+      child: SizedBox.square(
+        dimension: widget.size,
+        child: Transform(
+          transform: _perspectiveMatrix,
+          alignment: FractionalOffset.center,
+          child: ZoomWidget(
+            zoomController: controller.zoomController,
+            zoomInDuration: widget.zoomInDuration,
+            zoomOutDuration: widget.zoomOutDuration,
+            zoomScale: controller.zoomScale,
+            zoomTarget: zoomTarget,
+            onZoomStart: _onZoomStart,
+            onZoomInTick: onZoomInTick,
+            onZoomOutTick: onZoomOutTick,
+            onZoomEnd: _onZoomEnd,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: OrbitsPainter(controller: controller, opacity: _orbitOpacity),
+                    foregroundPainter: SolarSystemPainter(controller: controller),
+                  ),
+                ),
+                if (controller.selectedPlanet case Planet planet?)
+                  if (showSelectedPlanetInfo)
+                    HyperText(
+                      text: planet.name.toString(),
+                      animateOnInit: true,
+                      animationDuration: Duration(milliseconds: 2000),
+                      textBuilder: (context, text) => CustomPaint(
+                        painter: HyperTextPainter(text, target: planet),
+                      ),
+                    ),
+              ],
             ),
           ),
         ),
