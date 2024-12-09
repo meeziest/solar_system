@@ -14,7 +14,6 @@ class SolarSystemPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     paintSun(canvas, size);
-
     for (var cosmicObject in _controller.planets) {
       final innerGlowPaint = Paint()
         ..color = cosmicObject.color.withOpacity(0.75)
@@ -84,6 +83,8 @@ class SolarSystemPainter extends CustomPainter {
         ..color = _controller.star.color
         ..style = PaintingStyle.fill,
     );
+
+    canvas.scale(1.0, 1.0);
   }
 
   @override

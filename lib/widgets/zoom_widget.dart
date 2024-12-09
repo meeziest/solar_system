@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:solar_system/utils/tweens.dart';
 
 import '../controllers/zoom_controller.dart';
-import '../utils/curves.dart';
-import '../utils/utils.dart';
 
-class ZoomWidget extends StatefulWidget {
-  const ZoomWidget({
+class ZoomAnimationWidget extends StatefulWidget {
+  const ZoomAnimationWidget({
     super.key,
     required this.zoomController,
     required this.zoomTarget,
@@ -32,84 +30,102 @@ class ZoomWidget extends StatefulWidget {
   final Widget child;
 
   @override
-  State<ZoomWidget> createState() => _ZoomWidgetState();
+  State<ZoomAnimationWidget> createState() => _ZoomAnimationWidgetState();
 }
 
-class _ZoomWidgetState extends State<ZoomWidget> with SingleTickerProviderStateMixin {
-  late final Ticker _zoomTicker;
+class _ZoomAnimationWidgetState extends State<ZoomAnimationWidget> with SingleTickerProviderStateMixin {
   ZoomController get _controller => widget.zoomController;
+
+  Offset _startPosition = Offset.zero;
+  Offset _endPosition = Offset.zero;
+
+  double _startScale = 1;
+  double _endScale = 1;
+
+  late final AnimationController _animationController;
+  late Animation<ZoomData> _animation;
 
   @override
   void initState() {
     super.initState();
-    _zoomTicker = createTicker(onTick);
+
+    _startScale = 1;
+    _endScale = widget.zoomScale;
+
+    _startPosition = Offset.zero;
+    _endPosition = widget.zoomTarget;
+
+    _animationController = AnimationController(
+      duration: widget.zoomInDuration,
+      reverseDuration: widget.zoomOutDuration,
+      vsync: this,
+    );
+
+    _animation = _animationController.drive(
+      ZoomInTween(
+        begin: ZoomData(
+          focalPoint: _startPosition,
+          zoomScale: _startScale,
+        ),
+        end: ZoomData(
+          focalPoint: _endPosition,
+          zoomScale: _endScale,
+        ),
+      ),
+    );
+
     _controller.addListener(onZoom);
   }
 
-  void onZoom() {
-    if (!_zoomTicker.isActive) _zoomTicker.start();
+  @override
+  void didUpdateWidget(covariant ZoomAnimationWidget oldWidget) {
+    if (oldWidget.zoomController != widget.zoomController) {
+      oldWidget.zoomController.removeListener(onZoom);
+      widget.zoomController.addListener(onZoom);
+    }
+    _endPosition = widget.zoomTarget;
+    _animation = _animationController.drive(
+      ZoomInTween(
+        begin: ZoomData(
+          focalPoint: _startPosition,
+          zoomScale: _startScale,
+        ),
+        end: ZoomData(
+          focalPoint: _endPosition,
+          zoomScale: _endScale,
+        ),
+      ),
+    );
+    super.didUpdateWidget(oldWidget);
   }
 
-  double delta = 0;
-
-  final double _startScale = 1;
-  final Offset _startPosition = Offset.zero;
-
-  double scale = 1.0;
-  Offset offset = Offset.zero;
-
-  void onTick(Duration elapsed) {
-    final zoomDuration = _controller.zoom ? widget.zoomInDuration : widget.zoomOutDuration;
-    delta = (elapsed.inMicroseconds / zoomDuration.inMicroseconds).clamp(0, 1);
-
-    if (delta == 0) widget.onZoomStart?.call();
-
+  void onZoom() {
     if (_controller.zoom) {
-      widget.onZoomInTick?.call(delta);
-      scale = $lerpDouble(
-        _startScale,
-        widget.zoomScale,
-        CustomCurves.zoomIn.transform(delta),
-      );
-      offset = $lerpOffset(
-        _startPosition,
-        widget.zoomTarget,
-        Curves.easeOutExpo.transform(delta),
-      );
+      _animationController.forward();
     } else {
-      widget.onZoomOutTick?.call(delta);
-      scale = $lerpDouble(
-        widget.zoomScale,
-        _startScale,
-        CustomCurves.zoomOut.transform(delta),
-      );
-      offset = $lerpOffset(
-        widget.zoomTarget,
-        _startPosition,
-        Curves.easeInExpo.transform(delta),
-      );
+      _animationController.reverse();
     }
-
-    if (delta == 1) {
-      widget.onZoomEnd?.call();
-      _zoomTicker.stop();
-    }
+    setState(() {});
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Transform(
-      transform: Matrix4.identity()
-        ..scale(scale)
-        ..translate(offset.dx, offset.dy),
-      alignment: FractionalOffset.center,
-      child: widget.child,
-    );
-  }
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _animationController,
+        child: widget.child,
+        builder: (context, child) {
+          return Transform(
+              transform: Matrix4.identity()
+                ..translate(
+                  _animation.value.focalPoint.dx,
+                  _animation.value.focalPoint.dy,
+                )
+                ..scale(_animation.value.zoomScale),
+              child: child ?? const SizedBox());
+        },
+      );
 
   @override
   void dispose() {
-    _zoomTicker.dispose();
     _controller.removeListener(onZoom);
     super.dispose();
   }

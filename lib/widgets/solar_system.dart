@@ -88,6 +88,7 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
       }
     }
     if (controller.speedFactor != 0.0) controller.repaint();
+    setState(() {});
   }
 
   void onZoomInTick(double delta) {
@@ -97,7 +98,7 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
     _orbitOpacity = $lerpDouble(1.0, 0.0, Curves.easeOutExpo.transform(delta));
     controller.speedFactor = $lerpDouble(
       controller.maxSpeedFactor,
-      0.0,
+      0,
       Curves.linear.transform(delta),
     );
     setState(() {});
@@ -174,39 +175,40 @@ class _SolarSystemWidgetState extends State<SolarSystemWidget> with TickerProvid
       fit: BoxFit.scaleDown,
       child: SizedBox.square(
         dimension: widget.size,
-        child: Transform(
-          transform: _perspectiveMatrix,
-          alignment: FractionalOffset.center,
-          child: ZoomWidget(
-            zoomController: controller.zoomController,
-            zoomInDuration: widget.zoomInDuration,
-            zoomOutDuration: widget.zoomOutDuration,
-            zoomScale: controller.zoomScale,
-            zoomTarget: zoomTarget,
-            onZoomStart: _onZoomStart,
-            onZoomInTick: onZoomInTick,
-            onZoomOutTick: onZoomOutTick,
-            onZoomEnd: _onZoomEnd,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: OrbitsPainter(controller: controller, opacity: _orbitOpacity),
-                    foregroundPainter: SolarSystemPainter(controller: controller),
+        child: ZoomAnimationWidget(
+          zoomController: controller.zoomController,
+          zoomInDuration: widget.zoomInDuration,
+          zoomOutDuration: widget.zoomOutDuration,
+          zoomScale: controller.zoomScale,
+          zoomTarget: zoomTarget,
+          onZoomStart: _onZoomStart,
+          onZoomInTick: onZoomInTick,
+          onZoomOutTick: onZoomOutTick,
+          onZoomEnd: _onZoomEnd,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: OrbitsPainter(
+                    controller: controller,
+                    opacity: _orbitOpacity,
+                  ),
+                  foregroundPainter: SolarSystemPainter(
+                    controller: controller,
                   ),
                 ),
-                if (controller.selectedPlanet case Planet planet?)
-                  if (showSelectedPlanetInfo)
-                    HyperText(
-                      text: planet.name.toString(),
-                      animateOnInit: true,
-                      animationDuration: Duration(milliseconds: 2000),
-                      textBuilder: (context, text) => CustomPaint(
-                        painter: HyperTextPainter(text, target: planet),
-                      ),
+              ),
+              if (controller.selectedPlanet case Planet planet?)
+                if (showSelectedPlanetInfo)
+                  HyperText(
+                    text: planet.name.toString(),
+                    animateOnInit: true,
+                    animationDuration: Duration(milliseconds: 2000),
+                    textBuilder: (context, text) => CustomPaint(
+                      painter: HyperTextPainter(text, target: planet),
                     ),
-              ],
-            ),
+                  ),
+            ],
           ),
         ),
       ),

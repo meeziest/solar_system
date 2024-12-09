@@ -15,7 +15,6 @@ class SolarSystemApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Solar System Playground',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: Scaffold(
         backgroundColor: const Color(0xff030035),
@@ -28,7 +27,7 @@ class SolarSystemApp extends StatelessWidget {
                   child: SolarSystemWidget(
                     controller: controller,
                     size: solarSystemSize,
-                    zoomInDuration: const Duration(milliseconds: 5000),
+                    zoomInDuration: const Duration(milliseconds: 3000),
                     zoomOutDuration: const Duration(milliseconds: 1000),
                   ),
                 ),
@@ -66,7 +65,7 @@ class PlanetsSelector extends StatelessWidget {
                     if (controller.zoom) {
                       controller.zoomOut();
                     } else {
-                      controller.zoomPlanet(350, planet: planet);
+                      controller.zoomPlanet(100, planet: planet);
                     }
                   },
                   child: Text(planet.name),
