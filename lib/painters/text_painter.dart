@@ -17,7 +17,7 @@ final class HyperTextPainter extends CustomPainter {
       text: text,
       style: TextStyle(
         color: Colors.blue,
-        fontSize: 0.5,
+        fontSize: 0.2,
         fontWeight: FontWeight.bold,
       ),
     );
